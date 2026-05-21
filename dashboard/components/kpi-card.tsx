@@ -10,6 +10,7 @@ type Props = {
   source?: string;
   formula?: string;
   why?: string;
+  kpi?: string;
 };
 
 const accentMap = {
@@ -19,7 +20,7 @@ const accentMap = {
   bad: "var(--bad)",
 };
 
-export default function KpiCard({ label, value, unit, delta, hint, accent = "default", source, formula, why }: Props) {
+export default function KpiCard({ label, value, unit, delta, hint, accent = "default", source, formula, why, kpi }: Props) {
   return (
     <div style={{
       background: "var(--bg-elev)", border: "1px solid var(--line)",
@@ -33,7 +34,7 @@ export default function KpiCard({ label, value, unit, delta, hint, accent = "def
           display: "inline-block", width: 5, height: 5, borderRadius: "50%", background: "var(--accent)",
         }} />}
         {label}
-        {(source || formula || why) && <InfoTip source={source} formula={formula} why={why} />}
+        {(source || formula || why || kpi) && <InfoTip source={source} formula={formula} why={why} kpi={kpi} />}
       </div>
       <div style={{
         marginTop: 8, fontSize: 28, fontWeight: 700,

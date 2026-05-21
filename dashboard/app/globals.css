@@ -1,17 +1,30 @@
 @import "tailwindcss";
 
+/* ─── Nuitée / LiteAPI palette (sampled from their live site) ─── */
 :root {
-  --bg: #0a0d14;
-  --bg-elev: #11151f;
-  --bg-elev-2: #161b27;
-  --line: #1f2535;
-  --line-bright: #2a3147;
+  /* surfaces */
+  --bg: #0F0624;          /* page background — deep navy-purple */
+  --bg-elev: #19172C;     /* cards, sidebars */
+  --bg-elev-2: #1A1A30;   /* nested surfaces, table heads */
+  --line: #252540;        /* borders */
+  --line-bright: #3C3A4C; /* highlighted borders */
+
+  /* text */
   --ink: #e6eaf3;
   --ink-dim: #8993a8;
   --ink-faint: #4e566b;
-  --accent: #00d9a3;
-  --accent-dim: #007a5c;
-  --accent-blue: #4d9bff;
+
+  /* brand */
+  --brand: #5C3AAF;        /* Nuitée purple */
+  --brand-dim: #3F2A7E;
+  --brand-bright: #7C5BD8;
+
+  /* accents (kept names for backward compat, repointed) */
+  --accent: #079455;       /* Nuitée success green */
+  --accent-dim: #045c33;
+  --accent-blue: #1565C0;  /* Nuitée CTA blue */
+
+  /* states */
   --warn: #ffb347;
   --bad: #ff5c7c;
 }
@@ -23,7 +36,7 @@ html, body {
   padding: 0;
   background: var(--bg);
   color: var(--ink);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif;
+  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif;
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
 }
@@ -32,15 +45,13 @@ a { color: inherit; text-decoration: none; }
 
 .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
 
-.glow { text-shadow: 0 0 18px var(--accent-dim); }
-
 .hud-bg {
   background-image:
     linear-gradient(var(--line) 1px, transparent 1px),
     linear-gradient(90deg, var(--line) 1px, transparent 1px);
   background-size: 56px 56px;
   background-position: -1px -1px;
-  opacity: 0.25;
+  opacity: 0.18;
   pointer-events: none;
   position: fixed;
   inset: 0;

@@ -1,11 +1,27 @@
 "use client";
-import { useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { KPIS, KPI_CATEGORIES, STATUS_META, type Kpi, type KpiStatus } from "@/lib/kpi-catalog";
 
-export default function KpiCatalog() {
+export default function KpiCatalogPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: 24, color: "var(--ink-faint)" }}>loading catalog…</div>}>
+      <KpiCatalog />
+    </Suspense>
+  );
+}
+
+function KpiCatalog() {
+  const sp = useSearchParams();
   const [category, setCategory] = useState<string>("All");
   const [status, setStatus] = useState<KpiStatus | "All">("All");
   const [query, setQuery] = useState("");
+
+  // accept ?q=<kpi name> deep-link from tooltips
+  useEffect(() => {
+    const q = sp.get("q");
+    if (q) setQuery(q);
+  }, [sp]);
 
   const filtered = useMemo(() => {
     return KPIS.filter(k => {

@@ -31,41 +31,33 @@ export default async function CommandCenter() {
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginTop: 20 }}>
         <KpiCard
-          label="Hotels indexed"
-          value={totalHotels}
-          unit="hotels"
-          hint={`${citiesCount} cities · sandbox key`}
-          accent="live"
+          label="Hotels indexed" value={totalHotels} unit="hotels"
+          hint={`${citiesCount} cities · sandbox key`} accent="live"
           source="GET /data/hotels (8 cities)"
           formula="Σ count(hotels per city)"
           why="The sample we're scoring. In production this scales to LiteAPI's full 3M+ property catalog and a daily refresh."
+          kpi="Geo Precision Rate"
         />
         <KpiCard
-          label="Content completeness"
-          value={`${avgContent}%`}
-          hint="avg across all hotels"
-          accent="live"
+          label="Content completeness" value={`${avgContent}%`} hint="avg across all hotels" accent="live"
           source="GET /data/hotels"
           formula="mean(% of 8 key fields populated)"
           why="How well-enriched the catalog is on average. Below 80% means Content team should prioritise. Drives search-result quality."
+          kpi="Content Completeness %"
         />
         <KpiCard
-          label="Median take-rate"
-          value={`${medianTake}%`}
-          hint="(SSP − retail) / retail"
-          accent="live"
+          label="Median take-rate" value={`${medianTake}%`} hint="(SSP − retail) / retail" accent="live"
           source="POST /hotels/rates"
           formula="median((SSP − retail) / retail)"
           why="Implied margin if partners resell at SuggestedSellingPrice. The board-level monetisation signal — should trend up over time."
+          kpi="Median Take-Rate %"
         />
         <KpiCard
-          label="Avg price spread"
-          value={`${avgSpread}%`}
-          hint="(max − min) / median, by hotel"
-          accent="warn"
+          label="Avg price spread" value={`${avgSpread}%`} hint="(max − min) / median, by hotel" accent="warn"
           source="POST /hotels/rates"
           formula="mean((max − min) / median × 100)"
           why="Pricing-stability signal. Persistent high spreads = inconsistent inventory, often a sign of stale rate caches or supplier issues."
+          kpi="Price Spread %"
         />
       </div>
 
