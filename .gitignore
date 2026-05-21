@@ -11,3 +11,5 @@ dashboard/.next/
 dashboard/.vercel/
 dashboard/out/
 dashboard/*.tsbuildinfo
+
+.vercel
