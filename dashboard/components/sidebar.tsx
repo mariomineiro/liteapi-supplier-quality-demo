@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 type Item = { href: string; label: string; locked?: boolean; badge?: string };
 type Group = { title?: string; items: Item[] };
@@ -71,83 +72,169 @@ const NAV: Group[] = [
   },
 ];
 
+const BADGE_DESCRIPTION: Record<string, string> = {
+  LIVE: "live data",
+  DIFF: "differentiator",
+  DICT: "data dictionary",
+  MOCK: "mock data",
+  NEW: "new",
+  VISION: "vision",
+};
+
 export default function Sidebar() {
   const path = usePathname();
+  const [open, setOpen] = useState(false);
+
+  // Close drawer on route change
+  useEffect(() => { setOpen(false); }, [path]);
+
+  // Lock body scroll while drawer is open on mobile
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+      return () => { document.body.style.overflow = ""; };
+    }
+  }, [open]);
+
+  // Close on Esc
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
   return (
-    <aside style={{
-      width: 250, minHeight: "100vh", background: "var(--bg-elev)",
-      borderRight: "1px solid var(--line)", padding: "20px 0",
-      position: "sticky", top: 0, alignSelf: "flex-start",
-      fontSize: 13, maxHeight: "100vh", overflowY: "auto",
-    }}>
-      <div style={{ padding: "0 18px 14px", borderBottom: "1px solid var(--line)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{
-            display: "inline-block", width: 22, height: 22, borderRadius: 5,
-            background: "linear-gradient(135deg, var(--brand) 0%, var(--brand-bright) 100%)",
-            color: "#fff", fontSize: 13, fontWeight: 700, textAlign: "center", lineHeight: "22px",
-          }}>L</span>
-          <div>
-            <div style={{ fontWeight: 700, letterSpacing: 0.3, fontSize: 14, color: "var(--ink)" }}>
-              LiteAPI Command
-            </div>
-            <div className="mono" style={{ fontSize: 9, color: "var(--ink-faint)", marginTop: 1, letterSpacing: 1.2 }}>
-              <span style={{ color: "var(--warn)", background: "rgba(255,179,71,0.15)", padding: "1px 5px", borderRadius: 3, fontWeight: 700 }}>DEMO</span>
-              {" "}· built on the sandbox
+    <>
+      {/* Mobile header — hidden on md+ via CSS */}
+      <div className="app-mobile-header md:hidden">
+        <button
+          type="button"
+          className="hamburger"
+          aria-label={open ? "Close menu" : "Open menu"}
+          aria-expanded={open}
+          aria-controls="primary-nav"
+          onClick={() => setOpen(v => !v)}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            {open ? (
+              <>
+                <line x1="6" y1="6" x2="18" y2="18" />
+                <line x1="6" y1="18" x2="18" y2="6" />
+              </>
+            ) : (
+              <>
+                <line x1="4" y1="7" x2="20" y2="7" />
+                <line x1="4" y1="12" x2="20" y2="12" />
+                <line x1="4" y1="17" x2="20" y2="17" />
+              </>
+            )}
+          </svg>
+        </button>
+        <span className="app-mobile-header-title">LiteAPI Command</span>
+        <span className="mono" style={{ marginLeft: "auto", fontSize: 10, color: "var(--warn)", background: "rgba(255,179,71,0.15)", padding: "2px 6px", borderRadius: 3, fontWeight: 700, letterSpacing: 1 }}>DEMO</span>
+      </div>
+
+      <button
+        type="button"
+        className="sidebar-backdrop"
+        data-open={open ? "true" : "false"}
+        aria-label="Close menu"
+        tabIndex={open ? 0 : -1}
+        onClick={() => setOpen(false)}
+      />
+
+      <aside
+        id="primary-nav"
+        className="sidebar"
+        data-open={open ? "true" : "false"}
+        aria-label="Primary"
+      >
+        <div style={{ padding: "0 18px 14px", borderBottom: "1px solid var(--line)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span aria-hidden="true" style={{
+              display: "inline-block", width: 22, height: 22, borderRadius: 5,
+              background: "linear-gradient(135deg, var(--brand) 0%, var(--brand-bright) 100%)",
+              color: "#fff", fontSize: 13, fontWeight: 700, textAlign: "center", lineHeight: "22px",
+            }}>L</span>
+            <div>
+              <div style={{ fontWeight: 700, letterSpacing: 0.3, fontSize: 14, color: "var(--ink)" }}>
+                LiteAPI Command
+              </div>
+              <div className="mono" style={{ fontSize: 9, color: "var(--ink-faint)", marginTop: 1, letterSpacing: 1.2 }}>
+                <span style={{ color: "var(--warn)", background: "rgba(255,179,71,0.15)", padding: "1px 5px", borderRadius: 3, fontWeight: 700 }}>DEMO</span>
+                {" "}· built on the sandbox
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {NAV.map((g, gi) => (
-        <div key={gi} style={{ padding: "10px 0 4px" }}>
-          {g.title && (
-            <div style={{
-              padding: "8px 18px 4px",
-              fontSize: 10, letterSpacing: 1.2, textTransform: "uppercase",
-              color: "var(--ink-faint)", fontWeight: 600,
-            }}>{g.title}</div>
-          )}
-          {g.items.map((it) => {
-            const active = path === it.href;
-            return (
-              <Link key={it.href} href={it.href} style={{
-                display: "flex", alignItems: "center", justifyContent: "space-between",
-                padding: "7px 18px", margin: "1px 0",
-                color: active ? "var(--brand-bright)" : (it.locked ? "var(--ink-faint)" : "var(--ink-dim)"),
-                background: active ? "rgba(92,58,175,0.14)" : "transparent",
-                borderLeft: active ? "2px solid var(--brand)" : "2px solid transparent",
-                cursor: it.locked ? "not-allowed" : "pointer",
-              }}>
-                <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  {it.locked && <span style={{ fontSize: 10 }}>🔒</span>}
-                  {it.label}
-                </span>
-                {it.badge && <Badge kind={it.badge} />}
-              </Link>
-            );
-          })}
-        </div>
-      ))}
+        <nav aria-label="Primary navigation">
+          {NAV.map((g, gi) => (
+            <div key={gi} style={{ padding: "10px 0 4px" }} role="group" aria-label={g.title}>
+              {g.title && (
+                <div style={{
+                  padding: "8px 18px 4px",
+                  fontSize: 10, letterSpacing: 1.2, textTransform: "uppercase",
+                  color: "var(--ink-faint)", fontWeight: 600,
+                }}>{g.title}</div>
+              )}
+              {g.items.map((it) => {
+                const active = path === it.href;
+                if (it.locked) {
+                  return (
+                    <span
+                      key={it.href}
+                      className="nav-link"
+                      aria-disabled="true"
+                      title="Locked — not available in this demo"
+                    >
+                      <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <span aria-hidden="true" style={{ fontSize: 10 }}>🔒</span>
+                        <span className="sr-only">Locked: </span>
+                        {it.label}
+                      </span>
+                      {it.badge && <Badge kind={it.badge} />}
+                    </span>
+                  );
+                }
+                return (
+                  <Link
+                    key={it.href}
+                    href={it.href}
+                    className="nav-link"
+                    aria-current={active ? "page" : undefined}
+                    onClick={() => setOpen(false)}
+                  >
+                    <span>{it.label}</span>
+                    {it.badge && <Badge kind={it.badge} />}
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
+        </nav>
 
-      <div style={{
-        marginTop: 24, padding: "16px 18px", borderTop: "1px solid var(--line)",
-        fontSize: 11, color: "var(--ink-faint)",
-      }}>
-        <div className="mono" style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <span className="pulse" style={{
-            display: "inline-block", width: 6, height: 6, borderRadius: "50%",
-            background: "var(--accent)",
-          }} />
-          live · LiteAPI sandbox
+        <div style={{
+          marginTop: 24, padding: "16px 18px", borderTop: "1px solid var(--line)",
+          fontSize: 11, color: "var(--ink-faint)",
+        }}>
+          <div className="mono" style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span className="pulse" aria-hidden="true" style={{
+              display: "inline-block", width: 6, height: 6, borderRadius: "50%",
+              background: "var(--accent)",
+            }} />
+            <span className="sr-only">Status: </span>
+            live · LiteAPI sandbox
+          </div>
+          <div style={{ marginTop: 8 }}>
+            <a href="https://github.com/mariomineiro/liteapi-supplier-quality-demo" style={{ color: "var(--ink-dim)", textDecoration: "underline" }}>source</a>
+            {" · "}
+            <a href="https://liteapi.travel" style={{ color: "var(--ink-dim)", textDecoration: "underline" }}>liteapi.travel</a>
+          </div>
         </div>
-        <div style={{ marginTop: 8 }}>
-          <a href="https://github.com/mariomineiro/liteapi-supplier-quality-demo" style={{ color: "var(--ink-dim)", textDecoration: "underline" }}>source</a>
-          {" · "}
-          <a href="https://liteapi.travel" style={{ color: "var(--ink-dim)", textDecoration: "underline" }}>liteapi.travel</a>
-        </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 }
 
@@ -161,10 +248,17 @@ function Badge({ kind }: { kind: string }) {
     VISION: { bg: "linear-gradient(90deg, rgba(92,58,175,0.3), rgba(21,101,192,0.3))", fg: "var(--brand-bright)" },
   };
   const c = map[kind] || map.LIVE;
+  const desc = BADGE_DESCRIPTION[kind] ?? kind.toLowerCase();
   return (
-    <span style={{
-      fontSize: 9, padding: "2px 6px", borderRadius: 4, letterSpacing: 0.5,
-      background: c.bg, color: c.fg, fontWeight: 700,
-    }}>{kind}</span>
+    <span
+      aria-label={desc}
+      title={desc}
+      style={{
+        fontSize: 9, padding: "2px 6px", borderRadius: 4, letterSpacing: 0.5,
+        background: c.bg, color: c.fg, fontWeight: 700,
+      }}
+    >
+      <span aria-hidden="true">{kind}</span>
+    </span>
   );
 }
