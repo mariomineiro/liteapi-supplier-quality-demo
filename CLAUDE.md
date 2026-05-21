@@ -1,5 +1,15 @@
 # Project rules — liteapi-supplier-quality-demo
 
+## Deployment
+
+- **Live URL (production, public):** https://dashboard-sandy-theta-24.vercel.app
+- **Protected aliases (Vercel SSO required):** https://dashboard-mario-mineiros-projects.vercel.app
+- **Vercel project:** `mario-mineiros-projects/dashboard` (id `prj_fOsxJVjFqCAdRG2zcQcgiP7QmMgI`)
+- **Production branch:** `master`
+- **Root Directory setting:** ⚠️ currently `.` — MUST be `dashboard` for push-to-deploy to work. Change at https://vercel.com/mario-mineiros-projects/dashboard/settings → Root Directory → `dashboard` → Save.
+- **Auto-deploy on push:** broken until Root Directory is fixed (or until `.github/workflows/deploy.yml` is wired up with a `VERCEL_TOKEN` repo secret — workflow file is in the repo, just needs the secret).
+- **Manual deploy (works today):** the CLI's `vercel deploy --prod` from a clean Windows shell sometimes hangs during upload. Reliable workaround: `vercel redeploy <last-good-url> --target production` rebuilds the last successful deploy in place.
+
 ## Dashboard (`dashboard/`) — mobile-first & accessible by default
 
 The Next.js dashboard is a user-facing portal. Any change to it must follow the global portal rules (see user-level `~/.claude/CLAUDE.md`) and the project-specific notes below.
