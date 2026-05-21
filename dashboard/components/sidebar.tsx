@@ -9,6 +9,7 @@ const NAV: Group[] = [
   {
     items: [
       { href: "/", label: "Command Center" },
+      { href: "/kpi-catalog", label: "KPI Catalog", badge: "DICT" },
       { href: "/ask", label: "Ask LiteAPI", locked: true },
     ],
   },
@@ -106,9 +107,11 @@ export default function Sidebar() {
                     fontSize: 9, padding: "2px 6px", borderRadius: 4, letterSpacing: 0.5,
                     background: it.badge === "LIVE" ? "var(--accent-dim)" :
                                it.badge === "DIFF" ? "rgba(77,155,255,0.2)" :
+                               it.badge === "DICT" ? "rgba(77,155,255,0.15)" :
                                "rgba(255,179,71,0.2)",
                     color: it.badge === "LIVE" ? "var(--accent)" :
                            it.badge === "DIFF" ? "var(--accent-blue)" :
+                           it.badge === "DICT" ? "var(--accent-blue)" :
                            "var(--warn)",
                     fontWeight: 600,
                   }}>{it.badge}</span>
