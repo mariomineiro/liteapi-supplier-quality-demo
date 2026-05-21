@@ -125,8 +125,17 @@ export default function LiveAgent() {
 
       <div ref={scroller} style={{ background: "var(--bg-elev)", border: "1px solid var(--line)", borderRadius: 8, padding: 14, maxHeight: 420, overflowY: "auto", fontSize: 12 }}>
         {steps.length === 0 && (
-          <div style={{ color: "var(--ink-faint)", padding: "20px 0", textAlign: "center" }}>
-            Click <b style={{ color: "var(--brand-bright)" }}>▶ run agent</b> to simulate an agentic travel booking using the LiteAPI MCP surface.
+          <div style={{ padding: "32px 0", textAlign: "center" }}>
+            <div style={{ color: "var(--ink-faint)", marginBottom: 14, fontSize: 13 }}>
+              Simulate an agentic travel booking flow on top of the LiteAPI MCP surface.
+            </div>
+            <button onClick={start} disabled={running} style={{
+              padding: "10px 24px", borderRadius: 8, fontSize: 14, fontWeight: 700,
+              background: running ? "var(--bg-elev-2)" : "var(--brand)",
+              color: "#fff", border: "none",
+              cursor: running ? "wait" : "pointer",
+              boxShadow: "0 4px 16px rgba(92,58,175,0.4)",
+            }}>{running ? "running…" : "▶ run agent"}</button>
           </div>
         )}
         {steps.map((s, i) => <StepView key={i} step={s} />)}
