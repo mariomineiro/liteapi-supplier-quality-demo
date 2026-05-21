@@ -18,11 +18,11 @@ const NAV: Group[] = [
     items: [
       { href: "/supply-quality", label: "Supply Quality", badge: "LIVE" },
       { href: "/pricing", label: "Pricing & Take-Rate", badge: "LIVE" },
-      { href: "/bookings", label: "Bookings", locked: true },
-      { href: "/customers", label: "Customers", locked: true },
+      { href: "/bookings", label: "Bookings", badge: "MOCK" },
+      { href: "/customers", label: "Customers", badge: "MOCK" },
       { href: "/commission", label: "Commission", locked: true },
       { href: "/property-mapping", label: "Property Mapping", locked: true },
-      { href: "/supply-coverage-map", label: "Supply Coverage Map", locked: true },
+      { href: "/supply-coverage-map", label: "Supply Coverage Map", badge: "MOCK" },
       { href: "/price-check", label: "Price Check", locked: true, badge: "NEW" },
       { href: "/direct-connections", label: "Direct Connections", locked: true },
     ],
@@ -37,7 +37,7 @@ const NAV: Group[] = [
   {
     title: "Payments",
     items: [
-      { href: "/earnings", label: "Earnings", locked: true },
+      { href: "/earnings", label: "Earnings", badge: "MOCK" },
       { href: "/billing", label: "Billing & Services", locked: true },
     ],
   },
@@ -48,14 +48,14 @@ const NAV: Group[] = [
       { href: "/reports/earnings", label: "Earnings", locked: true },
       { href: "/reports/distributions", label: "Distributions", locked: true },
       { href: "/reports/customer-analysis", label: "Customer Analysis", locked: true },
-      { href: "/reports/destinations", label: "Destinations", locked: true },
+      { href: "/reports/destinations", label: "Destinations", badge: "MOCK" },
     ],
   },
   {
     title: "Agentic · MCP",
     items: [
-      { href: "/mcp/tool-latency", label: "Tool-call Latency", locked: true, badge: "DIFF" },
-      { href: "/mcp/funnel", label: "Agent vs Human Funnel", locked: true, badge: "DIFF" },
+      { href: "/mcp/tool-latency", label: "Tool-call Latency", badge: "DIFF" },
+      { href: "/mcp/funnel", label: "Agent vs Human Funnel", badge: "DIFF" },
     ],
   },
 ];
@@ -108,10 +108,12 @@ export default function Sidebar() {
                     background: it.badge === "LIVE" ? "var(--accent-dim)" :
                                it.badge === "DIFF" ? "rgba(77,155,255,0.2)" :
                                it.badge === "DICT" ? "rgba(77,155,255,0.15)" :
+                               it.badge === "MOCK" ? "rgba(180,180,180,0.12)" :
                                "rgba(255,179,71,0.2)",
                     color: it.badge === "LIVE" ? "var(--accent)" :
                            it.badge === "DIFF" ? "var(--accent-blue)" :
                            it.badge === "DICT" ? "var(--accent-blue)" :
+                           it.badge === "MOCK" ? "var(--ink-dim)" :
                            "var(--warn)",
                     fontWeight: 600,
                   }}>{it.badge}</span>
