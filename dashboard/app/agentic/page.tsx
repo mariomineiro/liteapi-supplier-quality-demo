@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Sparkline } from "@/components/charts";
 import InfoTip from "@/components/info-tip";
+import LiveAgent from "@/components/live-agent";
 
 type AgentMsg = { role: "user" | "agent"; text: string; tools?: { tool: string; ms: number; status: "ok" | "warn" }[]; result?: any };
 
@@ -85,8 +86,12 @@ export default function AgenticTravel() {
           why="Where the traffic comes from. Knowing the mix lets you co-design API features with the leading agent stack." />
       </div>
 
+      <div style={{ marginBottom: 18 }}>
+        <LiveAgent />
+      </div>
+
       <div style={{ background: "var(--bg-elev)", border: "1px solid var(--line)", borderRadius: 10, padding: 18, marginBottom: 18 }}>
-        <div style={{ fontSize: 11, letterSpacing: 1.2, color: "var(--ink-faint)", textTransform: "uppercase", marginBottom: 12 }}>Sample agentic flows · pick one</div>
+        <div style={{ fontSize: 11, letterSpacing: 1.2, color: "var(--ink-faint)", textTransform: "uppercase", marginBottom: 12 }}>More agentic flows · pick one</div>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           {SAMPLE_CONVERSATIONS.map((c, i) => (
             <button key={i} onClick={() => setActive(i)} style={{

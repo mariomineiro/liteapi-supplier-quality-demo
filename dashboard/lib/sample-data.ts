@@ -186,3 +186,165 @@ export function trend(seed: number, n = 20, base = 100, drift = 0.05): number[] 
   }
   return out;
 }
+
+// ─────────────────────────── Commission
+export function commissionByPartner(seed = 81) {
+  const r = mulberry32(seed);
+  const partners = [
+    "Loyalty Aggregator NA", "Fintech Travel Perk", "Airline Hotel Add-on", "OTA Tier-2 EU",
+    "Bank Rewards Portal", "Booking Engine SaaS", "Corporate Travel Co", "Meta-search EU",
+    "Cashback Travel App", "Lifestyle Subscription",
+  ];
+  return partners.map(name => ({ name, commission: 50_000 + r() * 850_000, takeRate: 6 + r() * 14 }))
+    .sort((a, b) => b.commission - a.commission);
+}
+
+export function commissionTrend(seed = 83, weeks = 24) {
+  const r = mulberry32(seed);
+  const labels: string[] = [];
+  const v: number[] = [];
+  let base = 740_000;
+  for (let i = 0; i < weeks; i++) {
+    base = base * (1 + 0.008 + (r() - 0.4) * 0.05);
+    v.push(base);
+    labels.push(`W${i + 1}`);
+  }
+  return { labels, values: v };
+}
+
+// ─────────────────────────── Property Mapping
+export function propertyMappingStats() {
+  return {
+    total: 3_241_870,
+    matched: 2_948_512,
+    duplicates: 18_223,
+    unmapped: 275_135,
+    sources: [
+      { source: "LiteAPI canonical", count: 3_241_870, color: "var(--accent)" },
+      { source: "HotelBeds", count: 1_872_440, color: "var(--accent-blue)" },
+      { source: "Expedia EAN", count: 1_512_009, color: "var(--brand-bright)" },
+      { source: "WebBeds", count: 982_551, color: "var(--warn)" },
+      { source: "TBO", count: 642_009, color: "var(--ink-dim)" },
+    ],
+  };
+}
+
+// ─────────────────────────── Price Check / Rate Parity
+export function rateParitySnapshot(seed = 91) {
+  const r = mulberry32(seed);
+  const hotels = [
+    { name: "Park Plaza Westminster Bridge · London", liteAPI: 224, competitors: [231, 218, 244] },
+    { name: "Meliá Lisboa Aeroporto · Lisbon", liteAPI: 187, competitors: [199, 184, 192] },
+    { name: "Hotel Mundial · Lisbon", liteAPI: 156, competitors: [162, 148, 158] },
+    { name: "Lumen Hotel · Lisbon", liteAPI: 142, competitors: [148, 152, 145] },
+    { name: "Hilton Barcelona · Barcelona", liteAPI: 268, competitors: [254, 248, 262] },
+    { name: "Pestana Vintage · Porto", liteAPI: 198, competitors: [206, 192, 201] },
+    { name: "Trianon Pasarela · Paris", liteAPI: 312, competitors: [298, 305, 320] },
+    { name: "Sofitel Dublin · Dublin", liteAPI: 287, competitors: [294, 283, 291] },
+  ];
+  return hotels.map(h => {
+    const compMin = Math.min(...h.competitors);
+    const compMax = Math.max(...h.competitors);
+    const drift = ((h.liteAPI - compMin) / compMin) * 100;
+    return { ...h, compMin, compMax, drift };
+  });
+}
+
+// ─────────────────────────── AI Recommendations
+export function aiRecommendations() {
+  return [
+    {
+      id: 1, priority: "P1", category: "Pricing",
+      title: "Hilton Barcelona is over-priced by 5.5% vs market",
+      detail: "LiteAPI rate €268 vs market min €248. Likely losing ~14 bookings/week to competitor 0.3 km away.",
+      action: "Adjust take-rate or push rate negotiation to property",
+      impact: "+€18k/quarter",
+      confidence: 0.86,
+    },
+    {
+      id: 2, priority: "P1", category: "Supply",
+      title: "Lisbon midscale supply gap (3* hotels under €150)",
+      detail: "Search-to-shop ratio for 3* under €150 in Lisbon is 28% (vs 41% network median). 47 hotels match but unmapped.",
+      action: "Run property-mapping batch on EAN feed for PT 3* segment",
+      impact: "+€32k/quarter",
+      confidence: 0.79,
+    },
+    {
+      id: 3, priority: "P2", category: "Agentic",
+      title: "MCP /hotels/rates p95 trending up 28% over 14d",
+      detail: "Latency rose from 322ms to 412ms p95. Agents may start retrying or downgrading. Likely cache invalidation drift.",
+      action: "Review Cloudflare cache rules + supplier-fanout timeout",
+      impact: "Protect agent conversion",
+      confidence: 0.91,
+    },
+    {
+      id: 4, priority: "P2", category: "Customer",
+      title: "Booking Engine SaaS partner trending down 18% MoM",
+      detail: "Last 30 days vs prior 30. No deploys on partner side; no support tickets. Probably integration drift.",
+      action: "CS to schedule a check-in this week",
+      impact: "Defend €240k/quarter at risk",
+      confidence: 0.74,
+    },
+    {
+      id: 5, priority: "P3", category: "Content",
+      title: "187 hotels in Casablanca under 50% content completeness",
+      detail: "Missing descriptions, photos, or facility lists. Search-result CTR is below segment median.",
+      action: "Run sentiment_analysis batch + push enrichment task to Content team",
+      impact: "+CTR uplift on MA segment",
+      confidence: 0.81,
+    },
+    {
+      id: 6, priority: "P3", category: "Operations",
+      title: "Refund spike on Dublin bookings W19-W20",
+      detail: "Cancellation rate 14.2% (vs 8.1% prior 4w). Concentrated on 3 properties. Likely an overbooking issue.",
+      action: "Cross-check supplier inventory vs sold rooms for the 3 properties",
+      impact: "Process fix",
+      confidence: 0.83,
+    },
+  ];
+}
+
+// ─────────────────────────── Distributions
+export function distributionMatrix() {
+  const channels = ["Hopper-like", "Expedia-like", "Bank Rewards", "Booking SaaS", "Corp Travel"];
+  const suppliers = ["LiteAPI direct", "HotelBeds", "Expedia EAN", "WebBeds", "TBO"];
+  const matrix = channels.map((_, ci) => suppliers.map((_, si) => {
+    const r = mulberry32(ci * 31 + si * 17);
+    return Math.floor(50 + r() * 950);
+  }));
+  return { channels, suppliers, matrix };
+}
+
+// ─────────────────────────── Customer Analysis
+export function ltvByTier(seed = 113) {
+  const r = mulberry32(seed);
+  return [
+    { tier: "Enterprise (>€5M/yr)", count: 5, avgLtv: 22_400_000 + r() * 4e6, color: "var(--accent)" },
+    { tier: "Mid (€500k–5M/yr)", count: 24, avgLtv: 1_840_000 + r() * 200_000, color: "var(--accent-blue)" },
+    { tier: "SMB (€50k–500k/yr)", count: 86, avgLtv: 142_000 + r() * 30_000, color: "var(--brand-bright)" },
+    { tier: "Self-serve (<€50k/yr)", count: 188, avgLtv: 19_000 + r() * 4000, color: "var(--ink-dim)" },
+  ];
+}
+
+export function churnRiskList(seed = 117) {
+  const r = mulberry32(seed);
+  const partners = [
+    "Booking Engine SaaS", "Cashback Travel App", "Meta-search EU", "Cruise Pre-book", "Insurance Cross-sell", "Corporate Travel Co", "Lifestyle Subscription",
+  ];
+  return partners.map(name => ({
+    name,
+    riskScore: 30 + r() * 65,
+    monthlyGbv: 0.2e6 + r() * 2.4e6,
+    daysSinceLastCall: Math.floor(r() * 28),
+    integrationHealth: 60 + r() * 35,
+  })).sort((a, b) => b.riskScore - a.riskScore);
+}
+
+export function cohortLtvCurve(seed = 119) {
+  const r = mulberry32(seed);
+  const months = ["M+0","M+1","M+2","M+3","M+6","M+9","M+12","M+18","M+24"];
+  const values = months.map((_, i) => {
+    return Math.floor(2_400 * Math.pow(1.15, i) * (1 + (r() - 0.5) * 0.1));
+  });
+  return { months, values };
+}
