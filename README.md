@@ -1,8 +1,8 @@
 # LiteAPI Supplier-Quality Demo
 
-A working prototype computing supply, pricing and content KPIs over the [LiteAPI](https://liteapi.travel/) travel-tech sandbox. Two Python agents + a 35+ KPI catalog + a Next.js dashboard mirroring the LiteAPI portal layout.
+Open-source prototype computing supply, pricing and content KPIs over the [LiteAPI](https://liteapi.travel/) public sandbox. Two Python agents + a 70+ KPI catalog + a Next.js dashboard inspired by the LiteAPI portal layout.
 
-No external dependencies for the Python agents (stdlib only). Live calls against the public sandbox.
+No external dependencies for the Python agents (stdlib only). All numbers are live calls against the public sandbox.
 
 ---
 
@@ -60,9 +60,9 @@ rank  overall  content  reviews  facilities  stars  hotel
  10   56.2%      63       2     1  933.72  1529.39  2730.63  117.5%   49.3%  Corpo Santo  ← pricing outlier
 ```
 
-## The pitch
+## How it's structured
 
-**The same pipeline solves both halves of a Head-of-Data mandate at a travel-API business.**
+A single data pipeline serves two surfaces — an internal scorecard and an API-side rank-boost signal:
 
 ```
 LiteAPI MCP / REST   →   per-hotel quality + pricing signals
@@ -79,7 +79,7 @@ BigQuery (supplier_quality_daily, price_competitiveness_daily)
                  (data as a product feature, not back-office)
 ```
 
-The full KPI map is in [`KPI_CATALOG.md`](./KPI_CATALOG.md) — 35+ KPIs across internal-BI, product-data, and agentic-MCP, each mapped to its source endpoint.
+The full KPI map is in the dashboard at `/kpi-catalog` (70+ KPIs across business, operating, infrastructure and agentic categories) and in [`KPI_CATALOG.md`](./KPI_CATALOG.md).
 
 ## License
 

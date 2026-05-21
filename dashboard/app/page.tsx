@@ -30,10 +30,43 @@ export default async function CommandCenter() {
       <Header />
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginTop: 20 }}>
-        <KpiCard label="Hotels indexed" value={totalHotels} unit="hotels" hint={`${citiesCount} cities · sandbox key`} accent="live" />
-        <KpiCard label="Content completeness" value={`${avgContent}%`} hint="avg across all hotels" accent="live" />
-        <KpiCard label="Median take-rate" value={`${medianTake}%`} hint="(SSP – retail) / retail" accent="live" />
-        <KpiCard label="Avg price spread" value={`${avgSpread}%`} hint="(max – min) / median, by hotel" accent="warn" />
+        <KpiCard
+          label="Hotels indexed"
+          value={totalHotels}
+          unit="hotels"
+          hint={`${citiesCount} cities · sandbox key`}
+          accent="live"
+          source="GET /data/hotels (8 cities)"
+          formula="Σ count(hotels per city)"
+          why="The sample we're scoring. In production this scales to LiteAPI's full 3M+ property catalog and a daily refresh."
+        />
+        <KpiCard
+          label="Content completeness"
+          value={`${avgContent}%`}
+          hint="avg across all hotels"
+          accent="live"
+          source="GET /data/hotels"
+          formula="mean(% of 8 key fields populated)"
+          why="How well-enriched the catalog is on average. Below 80% means Content team should prioritise. Drives search-result quality."
+        />
+        <KpiCard
+          label="Median take-rate"
+          value={`${medianTake}%`}
+          hint="(SSP − retail) / retail"
+          accent="live"
+          source="POST /hotels/rates"
+          formula="median((SSP − retail) / retail)"
+          why="Implied margin if partners resell at SuggestedSellingPrice. The board-level monetisation signal — should trend up over time."
+        />
+        <KpiCard
+          label="Avg price spread"
+          value={`${avgSpread}%`}
+          hint="(max − min) / median, by hotel"
+          accent="warn"
+          source="POST /hotels/rates"
+          formula="mean((max − min) / median × 100)"
+          why="Pricing-stability signal. Persistent high spreads = inconsistent inventory, often a sign of stale rate caches or supplier issues."
+        />
       </div>
 
       <div style={{ marginTop: 28 }}>
@@ -92,9 +125,9 @@ function Header() {
         <span className="mono" style={{ fontSize: 11, color: "var(--ink-faint)" }}>· live sandbox · 8 cities</span>
       </div>
       <div style={{ marginTop: 6, fontSize: 13, color: "var(--ink-dim)", maxWidth: 720 }}>
-        An open-source travel-tech KPI console built on LiteAPI&apos;s sandbox + the open-source MCP server.
-        The four primary KPIs below are computed live from the API. The rest of the sidebar shows what a
-        production data console for a hotel-API business would surface — locked items unlock with prod data + telemetry access.
+        Business and operating KPIs for a travel-API platform. Live numbers on the cards below come from the
+        public LiteAPI sandbox; locked items on the sidebar represent KPIs that require production data,
+        billing systems, or telemetry layers to compute.
       </div>
     </div>
   );

@@ -17,6 +17,9 @@ export type Kpi = {
 };
 
 export const KPI_CATEGORIES = [
+  "Board & Investor",
+  "Growth & Retention",
+  "Unit Economics",
   "Supply Quality",
   "Pricing & Rate Parity",
   "Booking Funnel",
@@ -30,6 +33,36 @@ export const KPI_CATEGORIES = [
 ] as const;
 
 export const KPIS: Kpi[] = [
+  // ---------- Board & Investor (the metrics a Series-A board pack opens with) ----------
+  { area: "Board & Investor", name: "GBV Growth (YoY)", description: "Year-over-year growth in Gross Booking Value.", objective: "Headline growth narrative.", formula: "(GBV_this_year − GBV_last_year) / GBV_last_year × 100", source: "data warehouse · bookings fact", status: "prod-only" },
+  { area: "Board & Investor", name: "Net Revenue Growth (QoQ)", description: "Quarter-over-quarter growth in net revenue (post-commission).", objective: "Track acceleration vs deceleration.", formula: "(NR_this_qtr − NR_last_qtr) / NR_last_qtr × 100", source: "finance system", status: "prod-only" },
+  { area: "Board & Investor", name: "Gross Margin %", description: "Net revenue minus cost of revenue, as % of net revenue.", objective: "SaaS-grade margin benchmark.", formula: "(net_revenue − COGS) / net_revenue × 100", source: "finance", status: "prod-only" },
+  { area: "Board & Investor", name: "Net Revenue Retention (NRR)", description: "Last-year cohort revenue, this year (incl. expansion, minus churn).", objective: "The single best SaaS health metric.", formula: "Σ(revenue_t in cohort) / Σ(revenue_t-1 in cohort) × 100", source: "bookings × customers", status: "prod-only" },
+  { area: "Board & Investor", name: "Customer Concentration (HHI)", description: "Herfindahl-Hirschman Index over partner GBV share.", objective: "Single-number concentration risk.", formula: "Σ((partner_share × 100)²)", source: "bookings × partners", status: "prod-only" },
+  { area: "Board & Investor", name: "Top-5 Customer % of GBV", description: "Concentration among the five largest partners.", objective: "Investor-ask: how exposed are we?", formula: "Σ_top5(GBV) / Σ_total(GBV) × 100", source: "bookings × partners", status: "prod-only" },
+  { area: "Board & Investor", name: "Logo Retention %", description: "% of paying partners retained YoY.", objective: "Stickiness narrative.", formula: "active_partners_now ∩ active_partners_y-1 / active_partners_y-1 × 100", source: "partner billing", status: "prod-only" },
+  { area: "Board & Investor", name: "Burn Multiple", description: "Net burn divided by net new ARR.", objective: "Capital efficiency.", formula: "net_burn / net_new_ARR", source: "finance × billing", status: "prod-only" },
+  { area: "Board & Investor", name: "Rule of 40", description: "Growth rate + EBITDA margin.", objective: "SaaS quality benchmark (>40 = healthy).", formula: "(growth_rate_pct) + (ebitda_margin_pct)", source: "finance", status: "prod-only" },
+  { area: "Board & Investor", name: "Capital Efficiency (Magic Number)", description: "Net new ARR ÷ sales & marketing spend.", objective: "Forecast viable scale.", formula: "new_ARR_q / (S&M_spend_q-1)", source: "finance × pipeline", status: "prod-only" },
+  { area: "Board & Investor", name: "Runway (months)", description: "Cash on hand ÷ monthly net burn.", objective: "Survival horizon.", formula: "cash / monthly_burn", source: "finance", status: "prod-only" },
+
+  // ---------- Growth & Retention ----------
+  { area: "Growth & Retention", name: "Monthly Active Partners (MAP)", description: "Distinct API customers making ≥1 booking in the month.", objective: "Active customer base.", formula: "count(distinct partner_id where bookings_m > 0)", source: "bookings", status: "prod-only" },
+  { area: "Growth & Retention", name: "Expansion Revenue %", description: "Revenue from existing partners increasing usage.", objective: "Land-and-expand health.", formula: "(rev_growth_from_existing) / (total_rev) × 100", source: "billing × cohorts", status: "prod-only" },
+  { area: "Growth & Retention", name: "Gross Logo Churn %", description: "% of partners who stopped using the API in period.", objective: "Churn alarm.", formula: "lost_partners / active_partners_start × 100", source: "partner activity", status: "prod-only" },
+  { area: "Growth & Retention", name: "Net Booking Retention (per partner)", description: "Same-partner booking volume this period vs last.", objective: "Per-partner growth signal.", formula: "Σ(bookings_t per partner) / Σ(bookings_t-1 per partner) × 100", source: "bookings", status: "prod-only" },
+  { area: "Growth & Retention", name: "Time-to-First-Booking (days)", description: "Median days from partner signup to first prod booking.", objective: "Activation funnel.", formula: "median(first_booking_at − signup_at)", source: "partner × bookings", status: "prod-only" },
+  { area: "Growth & Retention", name: "Cohort Booking Volume (M+3, M+6, M+12)", description: "Bookings made by each signup cohort at 3/6/12 months in.", objective: "Cohort-quality trend over time.", formula: "Σ(bookings) grouped by cohort_month × age_months", source: "bookings × cohorts", status: "prod-only" },
+
+  // ---------- Unit Economics ----------
+  { area: "Unit Economics", name: "Take-Rate per Booking", description: "Commission earned divided by booking value.", objective: "Per-transaction margin.", formula: "commission / booking_total × 100", source: "bookings", status: "prod-only" },
+  { area: "Unit Economics", name: "Net Revenue per Booking", description: "Revenue per booking after refunds and adjustments.", objective: "Per-transaction value.", formula: "Σ(net_revenue) / Σ(bookings)", source: "bookings × refunds", status: "prod-only" },
+  { area: "Unit Economics", name: "LTV / CAC", description: "Lifetime value of a partner divided by acquisition cost.", objective: "Marketing efficiency.", formula: "ltv_per_partner / cac_per_partner", source: "finance × CRM", status: "prod-only" },
+  { area: "Unit Economics", name: "CAC Payback Period (months)", description: "Months for one partner's gross profit to repay CAC.", objective: "Capital recovery horizon.", formula: "cac / (monthly_gross_profit_per_partner)", source: "finance", status: "prod-only" },
+  { area: "Unit Economics", name: "Average Order Value (AOV)", description: "Mean booking total.", objective: "Per-transaction monetisation.", formula: "Σ(booking_total) / count(bookings)", source: "bookings", status: "prod-only" },
+  { area: "Unit Economics", name: "Take-Rate Volatility (bps)", description: "Standard deviation of take-rate across partners.", objective: "Pricing discipline signal.", formula: "stdev(partner_take_rates) × 10000", source: "bookings × partners", status: "prod-only" },
+  { area: "Unit Economics", name: "Cost per API Call (cents)", description: "Infra cost ÷ total API calls.", objective: "Variable cost per unit of demand.", formula: "infra_cost / total_api_calls × 100", source: "billing × infra", status: "prod-only" },
+
   // ---------- Supply Quality ----------
   { area: "Supply Quality", name: "Content Completeness %", description: "% of 8 key hotel fields populated (description, photos, facilities, geo, address, stars, chain).", objective: "Surface under-enriched supply for content team.", formula: "Σ(populated fields) / 8 × 100", source: "GET /data/hotels", status: "live" },
   { area: "Supply Quality", name: "Description Richness", description: "Hotel description length, HTML stripped.", objective: "Detect cookie-cutter listings.", formula: "len(strip_html(hotelDescription))", source: "GET /data/hotel", status: "live" },

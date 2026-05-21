@@ -1,3 +1,5 @@
+import InfoTip from "./info-tip";
+
 type Props = {
   label: string;
   value: string | number;
@@ -5,6 +7,9 @@ type Props = {
   delta?: { value: string; positive?: boolean };
   hint?: string;
   accent?: "default" | "live" | "warn" | "bad";
+  source?: string;
+  formula?: string;
+  why?: string;
 };
 
 const accentMap = {
@@ -14,11 +19,11 @@ const accentMap = {
   bad: "var(--bad)",
 };
 
-export default function KpiCard({ label, value, unit, delta, hint, accent = "default" }: Props) {
+export default function KpiCard({ label, value, unit, delta, hint, accent = "default", source, formula, why }: Props) {
   return (
     <div style={{
       background: "var(--bg-elev)", border: "1px solid var(--line)",
-      borderRadius: 10, padding: "16px 18px", position: "relative", overflow: "hidden",
+      borderRadius: 10, padding: "16px 18px", position: "relative",
     }}>
       <div style={{
         fontSize: 10, letterSpacing: 1.2, textTransform: "uppercase",
@@ -28,6 +33,7 @@ export default function KpiCard({ label, value, unit, delta, hint, accent = "def
           display: "inline-block", width: 5, height: 5, borderRadius: "50%", background: "var(--accent)",
         }} />}
         {label}
+        {(source || formula || why) && <InfoTip source={source} formula={formula} why={why} />}
       </div>
       <div style={{
         marginTop: 8, fontSize: 28, fontWeight: 700,
