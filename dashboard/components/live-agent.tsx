@@ -51,11 +51,16 @@ const SKIP_STEPS: Step[] = [
   { kind: "say", role: "agent", text: "8 more candidates. Top is Corpo Santo Lisbon Historical (5★, €264/n, 8 min walk from your usual area). Worth a look?" },
 ];
 
+type AttributionMethod = "mcp-tracked" | "self-report-yes" | "self-report-no" | "self-report-maybe" | "unknown";
+
 export default function LiveAgent() {
   const [steps, setSteps] = useState<Step[]>([]);
   const [running, setRunning] = useState(false);
   const [idx, setIdx] = useState(0);
   const [phase, setPhase] = useState<"initial" | "decision" | "booked" | "skipped">("initial");
+  const [externalClicked, setExternalClicked] = useState(false);
+  const [askDelayed, setAskDelayed] = useState(false);
+  const [attribution, setAttribution] = useState<AttributionMethod>("unknown");
   const scroller = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -78,16 +83,27 @@ export default function LiveAgent() {
     if (scroller.current) scroller.current.scrollTop = scroller.current.scrollHeight;
   }, [steps]);
 
-  const start = () => { setSteps([]); setIdx(0); setRunning(true); setPhase("initial"); };
-  const reset = () => { setSteps([]); setIdx(0); setRunning(false); setPhase("initial"); };
+  const start = () => { setSteps([]); setIdx(0); setRunning(true); setPhase("initial"); setExternalClicked(false); setAskDelayed(false); setAttribution("unknown"); };
+  const reset = () => { setSteps([]); setIdx(0); setRunning(false); setPhase("initial"); setExternalClicked(false); setAskDelayed(false); setAttribution("unknown"); };
 
   const onBook = () => {
     setPhase("booked");
+    setAttribution("mcp-tracked");
     appendSequence(BOOK_STEPS);
   };
   const onSkip = () => {
     setPhase("skipped");
     appendSequence(SKIP_STEPS);
+  };
+
+  const onExternalClick = () => {
+    setExternalClicked(true);
+    // Fire a delayed "did you book?" prompt — simulates a 30s/24h re-ping in prod
+    setTimeout(() => setAskDelayed(true), 3500);
+  };
+
+  const onSelfReport = (answer: "yes" | "no" | "maybe") => {
+    setAttribution(answer === "yes" ? "self-report-yes" : answer === "no" ? "self-report-no" : "self-report-maybe");
   };
 
   function appendSequence(seq: Step[]) {
@@ -179,12 +195,19 @@ export default function LiveAgent() {
 
       {/* ── KPI strip below the conversation ── */}
       {steps.length > 0 && (
-        <div style={{ marginTop: 14, display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 10 }}>
+        <div style={{ marginTop: 14, display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 10 }}>
           <Kpi label="Tool calls" value={toolCount.toString()} />
           <Kpi label="Total latency" value={`${totalLatency}ms`} accent={totalLatency > 1500 ? "warn" : "ok"} />
           <Kpi label="Confidence" value={confidence ? `${(confidence * 100).toFixed(0)}%` : "—"} accent={confidence >= 0.85 ? "ok" : undefined} />
           <Kpi label="Saving / night" value={saving} accent={saving !== "—" ? "ok" : undefined} />
           <Kpi label="Outcome" value={phase === "booked" ? "✓ Booked" : phase === "skipped" ? "↻ Refining" : phase === "decision" ? "awaiting" : "running"} accent={phase === "booked" ? "ok" : undefined} />
+          <Kpi label="Attribution" value={
+            attribution === "mcp-tracked" ? "MCP ✓" :
+            attribution === "self-report-yes" ? "self-report ✓" :
+            attribution === "self-report-no" ? "off-platform" :
+            attribution === "self-report-maybe" ? "pending" :
+            externalClicked ? "asking…" : "—"
+          } accent={attribution === "mcp-tracked" || attribution === "self-report-yes" ? "ok" : attribution === "self-report-no" ? "warn" : undefined} />
         </div>
       )}
 
@@ -193,11 +216,33 @@ export default function LiveAgent() {
           <div>
             <div style={{ fontSize: 11, color: "var(--ink-faint)", letterSpacing: 1, textTransform: "uppercase", marginBottom: 4 }}>Surfaced result</div>
             <div style={{ fontSize: 13, color: "var(--ink)" }}>
-              <a href={result.bookable.link} target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent-blue)", textDecoration: "underline" }}>{result.bookable.name} ↗</a>
+              <a href={result.bookable.link} target="_blank" rel="noopener noreferrer" onClick={onExternalClick} style={{ color: "var(--accent-blue)", textDecoration: "underline" }}>{result.bookable.name} ↗</a>
               <span style={{ color: "var(--ink-faint)" }}> · {result.bookable.price} · saving {result.bookable.saving}</span>
             </div>
           </div>
-          <a href={result.bookable.link} target="_blank" rel="noopener noreferrer" style={{ padding: "8px 14px", borderRadius: 6, background: "var(--brand)", color: "#fff", fontSize: 12, fontWeight: 600 }}>open hotel ↗</a>
+          <a href={result.bookable.link} target="_blank" rel="noopener noreferrer" onClick={onExternalClick} style={{ padding: "8px 14px", borderRadius: 6, background: "var(--brand)", color: "#fff", fontSize: 12, fontWeight: 600 }}>open hotel ↗</a>
+        </div>
+      )}
+
+      {askDelayed && attribution !== "self-report-yes" && attribution !== "self-report-no" && attribution !== "self-report-maybe" && (
+        <div style={{ marginTop: 12, padding: 14, background: "rgba(21,101,192,0.10)", border: "1px solid var(--accent-blue)", borderRadius: 8 }}>
+          <div style={{ fontSize: 12, color: "var(--ink)", marginBottom: 10 }}>
+            <strong style={{ color: "var(--accent-blue)" }}>Quick check:</strong> did you complete the booking on the hotel&apos;s site? <span style={{ color: "var(--ink-faint)" }}>(this is how we track off-platform conversion — a 30-second self-report ping)</span>
+          </div>
+          <div style={{ display: "flex", gap: 6 }}>
+            <button onClick={() => onSelfReport("yes")} style={{ padding: "6px 14px", borderRadius: 5, fontSize: 12, background: "var(--accent)", color: "#001a0f", border: "none", cursor: "pointer", fontWeight: 600 }}>✓ Yes, booked</button>
+            <button onClick={() => onSelfReport("no")} style={{ padding: "6px 14px", borderRadius: 5, fontSize: 12, background: "var(--bg-elev-2)", color: "var(--ink-dim)", border: "1px solid var(--line)", cursor: "pointer" }}>✗ No, didn&apos;t</button>
+            <button onClick={() => onSelfReport("maybe")} style={{ padding: "6px 14px", borderRadius: 5, fontSize: 12, background: "var(--bg-elev-2)", color: "var(--ink-dim)", border: "1px solid var(--line)", cursor: "pointer" }}>↻ Maybe later</button>
+          </div>
+        </div>
+      )}
+
+      {(attribution === "self-report-yes" || attribution === "self-report-no" || attribution === "self-report-maybe") && (
+        <div style={{ marginTop: 10, padding: 10, background: "var(--bg-elev)", border: "1px solid var(--line)", borderRadius: 6, fontSize: 12, color: "var(--ink-dim)" }}>
+          <span className="mono" style={{ color: attribution === "self-report-yes" ? "var(--accent)" : "var(--ink-faint)" }}>recorded:</span>{" "}
+          {attribution === "self-report-yes" ? "user self-reported a completed booking. Adds to attributed_bookings table with source=self_report." :
+            attribution === "self-report-no" ? "user did not book. Recorded as attempted_no_conversion for funnel-loss analysis." :
+            "user said maybe later. Re-prompts after 7d via email."}
         </div>
       )}
     </div>

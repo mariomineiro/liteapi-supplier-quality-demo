@@ -109,7 +109,68 @@ export default function AgenticTravel() {
 
       <Conversation msgs={conv.msgs} />
 
+      <AttributionStack />
+
       <ApiSurface />
+    </div>
+  );
+}
+
+function AttributionStack() {
+  const layers = [
+    {
+      name: "1 · MCP-attributed (hard signal)",
+      coverage: "~62% of agent bookings",
+      color: "var(--accent)",
+      how: "Every MCP session carries a session_id. When the agent calls POST /bookings, the idempotency-key embeds `mcp:{agent_id}:{session_id}`. Bookings table stores it. 1:1 attribution, no ambiguity.",
+      cost: "≈ €0 · already in the open-source MCP spec",
+    },
+    {
+      name: "2 · Self-report (soft signal)",
+      coverage: "~24% additional (off-platform bookings)",
+      color: "var(--accent-blue)",
+      how: "After the agent surfaces a result and the user clicks the external link, fire a 30-second delayed prompt: 'Did you book?' → Yes / No / Maybe. Re-ping after 7d if Maybe. Lands in `attributed_bookings` with source=self_report.",
+      cost: "Response rate ~35%. Cheap to ship.",
+    },
+    {
+      name: "3 · Cohort fallback (statistical)",
+      coverage: "~14% — backfill for unattributed sessions",
+      color: "var(--warn)",
+      how: "Compare bookings/searches ratios for agent-tagged sessions vs non-agent over a 7-day window. Difference attributable to the agent (causal-inference 101). Funnel-shape, not per-session.",
+      cost: "Daily BigQuery job · already a dbt model away.",
+    },
+    {
+      name: "4 · Incentive-tracked (premium)",
+      coverage: "Pilot only · highest fidelity",
+      color: "var(--brand-bright)",
+      how: "Offer the user a small benefit (loyalty points, 5% partner-funded discount) for confirming the booking through a tracking link or sharing the confirmation number. Highest attribution quality, additional partner cost.",
+      cost: "Partner-funded · only for top-tier partners.",
+    },
+  ];
+
+  return (
+    <div style={{ background: "var(--bg-elev)", border: "1px solid var(--line)", borderRadius: 10, padding: 18, marginBottom: 18 }}>
+      <div style={{ fontSize: 13, color: "var(--ink)", fontWeight: 700 }}>How we measure if the user actually booked</div>
+      <div style={{ fontSize: 12, color: "var(--ink-dim)", marginTop: 4, marginBottom: 14, lineHeight: 1.5 }}>
+        Agentic-booking attribution is a stack, not a single number. Four layers, each with different fidelity, cost, and coverage.
+        The total <strong style={{ color: "var(--accent)" }}>tracked agent conversion ≈ 86%</strong> of all agent-influenced bookings —
+        which is the moat metric for an agentic-travel API and the basis for pricing agent traffic.
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
+        {layers.map((l, i) => (
+          <div key={i} style={{ background: "var(--bg-elev-2)", border: `1px solid var(--line)`, borderLeft: `3px solid ${l.color}`, borderRadius: 8, padding: 14 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: l.color, marginBottom: 4 }}>{l.name}</div>
+            <div className="mono" style={{ fontSize: 10, color: "var(--ink-dim)", marginBottom: 8 }}>{l.coverage}</div>
+            <div style={{ fontSize: 12, color: "var(--ink-dim)", lineHeight: 1.5, marginBottom: 6 }}>{l.how}</div>
+            <div style={{ fontSize: 11, color: "var(--ink-faint)" }}><strong>Cost:</strong> {l.cost}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{ marginTop: 14, padding: 10, background: "rgba(7,148,85,0.06)", border: "1px solid var(--accent-dim)", borderRadius: 6, fontSize: 12, color: "var(--ink-dim)" }}>
+        <strong style={{ color: "var(--accent)" }}>The moat metric:</strong> <span className="mono">attributed_agent_bookings / agent_search_sessions × 100</span>.
+        Today (industry) ≈ <strong>14.6%</strong> for agents vs <strong>8.2%</strong> for humans —
+        the lift everyone in travel-tech wants but only Nuitée can measure because Nuitée open-sourced the MCP.
+      </div>
     </div>
   );
 }
