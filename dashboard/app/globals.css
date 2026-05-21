@@ -250,6 +250,11 @@ a { color: inherit; text-decoration: none; }
   min-height: 36px;
   border-left: 2px solid transparent;
 }
+/* iOS HIG / WCAG 2.5.5 — tap targets ≥ 44×44 below md */
+@media (max-width: 767px) {
+  .nav-link { min-height: 44px; padding: 11px 18px; }
+  .hamburger { width: 44px; height: 44px; }
+}
 .nav-link:hover { color: var(--ink); background: rgba(255,255,255,0.02); }
 .nav-link[aria-current="page"] {
   color: var(--brand-bright);
@@ -278,12 +283,23 @@ a { color: inherit; text-decoration: none; }
   }
 }
 
-/* Horizontally-scrollable table wrapper */
+/* Horizontally-scrollable table wrapper.
+   The mask creates a soft right-edge fade so users see "there's more →"
+   only when the container is actually overflowed. The mask collapses
+   to none when scrolled to the end (background-attachment: local trick). */
 .table-scroll {
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   border-radius: 10px;
+  background:
+    /* shadow-left covers content fade when scrolled right */
+    linear-gradient(to right, var(--bg-elev) 30%, rgba(25,23,44,0)) left center / 20px 100% no-repeat local,
+    /* shadow-right indicates more content to the right */
+    linear-gradient(to left, var(--bg-elev) 30%, rgba(25,23,44,0)) right center / 20px 100% no-repeat local,
+    /* cue-right: small accent fading shadow that scrolls with content */
+    linear-gradient(to left, rgba(124,91,216,0.45), rgba(124,91,216,0)) right center / 14px 100% no-repeat scroll,
+    var(--bg-elev);
 }
 
 /* Headings — fluid on small screens */

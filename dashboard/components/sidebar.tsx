@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Item = { href: string; label: string; locked?: boolean; badge?: string };
 type Group = { title?: string; items: Item[] };
@@ -84,6 +84,8 @@ const BADGE_DESCRIPTION: Record<string, string> = {
 export default function Sidebar() {
   const path = usePathname();
   const [open, setOpen] = useState(false);
+  const hamburgerRef = useRef<HTMLButtonElement | null>(null);
+  const drawerRef = useRef<HTMLElement | null>(null);
 
   // Close drawer on route change
   useEffect(() => { setOpen(false); }, [path]);
@@ -96,12 +98,18 @@ export default function Sidebar() {
     }
   }, [open]);
 
-  // Close on Esc
+  // Close on Esc + focus management:
+  // on open → move focus into drawer; on close → restore to hamburger.
   useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    if (open) {
+      const firstLink = drawerRef.current?.querySelector<HTMLElement>("a[href], button");
+      firstLink?.focus();
+      const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+      window.addEventListener("keydown", onKey);
+      return () => window.removeEventListener("keydown", onKey);
+    } else if (typeof document !== "undefined" && document.activeElement === document.body) {
+      hamburgerRef.current?.focus();
+    }
   }, [open]);
 
   return (
@@ -109,6 +117,7 @@ export default function Sidebar() {
       {/* Mobile header — hidden on md+ via CSS */}
       <div className="app-mobile-header md:hidden">
         <button
+          ref={hamburgerRef}
           type="button"
           className="hamburger"
           aria-label={open ? "Close menu" : "Open menu"}
@@ -145,6 +154,7 @@ export default function Sidebar() {
       />
 
       <aside
+        ref={drawerRef}
         id="primary-nav"
         className="sidebar"
         data-open={open ? "true" : "false"}
