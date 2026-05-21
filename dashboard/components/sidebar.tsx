@@ -9,7 +9,13 @@ const NAV: Group[] = [
   {
     items: [
       { href: "/", label: "Command Center" },
+      { href: "/daily-360", label: "Daily 360° Overview", badge: "LIVE" },
+      { href: "/departments", label: "Departments", badge: "LIVE" },
       { href: "/kpi-catalog", label: "KPI Catalog", badge: "DICT" },
+      { href: "/agentic", label: "Agentic Travel", badge: "DIFF" },
+      { href: "/data-lineage", label: "Data Lineage", badge: "LIVE" },
+      { href: "/health-quality", label: "Health & Quality", badge: "LIVE" },
+      { href: "/alerts", label: "Critical Alerts", badge: "LIVE" },
       { href: "/ask", label: "Ask LiteAPI", locked: true },
     ],
   },

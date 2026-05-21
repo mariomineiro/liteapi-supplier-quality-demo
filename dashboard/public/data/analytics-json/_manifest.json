@@ -1,0 +1,188 @@
+[
+  {
+    "slug": "fact-industry-daily-travel-2022-2024",
+    "source": "fact_industry_daily_travel_2022_2024.csv",
+    "count": 1411,
+    "columns": [
+      "date_key",
+      "industry_key",
+      "users",
+      "events",
+      "created_at",
+      "revenue",
+      "sessions"
+    ]
+  },
+  {
+    "slug": "travel-bookings-reservations-daily-2022-2024",
+    "source": "travel_bookings___reservations_daily_2022_2024.csv",
+    "count": 1410,
+    "columns": [
+      "date",
+      "Bookings Today",
+      "Booking Value",
+      "Conversion Rate",
+      "Average Booking Value",
+      "Booking Lead Time",
+      "Cancellation Rate",
+      "Modification Requests",
+      "Multi-Destination Bookings",
+      "Group Bookings",
+      "Last-Minute Bookings"
+    ]
+  },
+  {
+    "slug": "travel-customer-experience-daily-2022-2024",
+    "source": "travel_customer_experience_daily_2022_2024.csv",
+    "count": 1410,
+    "columns": [
+      "date",
+      "Customer Satisfaction",
+      "NPS Score",
+      "Customer Support Tickets",
+      "First Response Time",
+      "Resolution Rate",
+      "On-Time Departures",
+      "Travel Disruptions",
+      "Upgrade Requests",
+      "Loyalty Program Sign-ups",
+      "Customer Complaints"
+    ]
+  },
+  {
+    "slug": "travel-finance-daily-2022-2024",
+    "source": "travel_finance_daily_2022_2024.csv",
+    "count": 1410,
+    "columns": [
+      "date",
+      "Daily Revenue",
+      "Gross Margin",
+      "Refunds Issued",
+      "Payment Success Rate",
+      "Commission Revenue",
+      "Ancillary Revenue",
+      "Currency Exchange Impact",
+      "Days to Payment",
+      "Supplier Payments",
+      "Profit per Booking"
+    ]
+  },
+  {
+    "slug": "travel-inventory-management-daily-2022-2024",
+    "source": "travel_inventory_management_daily_2022_2024.csv",
+    "count": 1410,
+    "columns": [
+      "date",
+      "Occupancy Rate",
+      "Available Inventory",
+      "RevPAR",
+      "Yield Management",
+      "Overbooking Rate",
+      "No-Show Rate",
+      "Inventory Turnover",
+      "Dynamic Pricing Changes",
+      "Partner Inventory",
+      "Blackout Dates"
+    ]
+  },
+  {
+    "slug": "travel-it-platform-daily-2022-2024",
+    "source": "travel_it___platform_daily_2022_2024.csv",
+    "count": 1410,
+    "columns": [
+      "date",
+      "Platform Uptime",
+      "Booking Engine Performance",
+      "Mobile App Usage",
+      "API Performance",
+      "Payment Gateway Uptime",
+      "System Errors",
+      "Database Performance",
+      "Security Incidents",
+      "Data Sync Issues",
+      "Infrastructure Costs"
+    ]
+  },
+  {
+    "slug": "travel-marketing-daily-2022-2024",
+    "source": "travel_marketing_daily_2022_2024.csv",
+    "count": 1410,
+    "columns": [
+      "date",
+      "Website Traffic",
+      "Search Volume",
+      "Email Campaign Performance",
+      "Social Media Engagement",
+      "Paid Ads Performance",
+      "Content Engagement",
+      "Influencer Campaign Results",
+      "Remarketing Success",
+      "Brand Awareness",
+      "Customer Acquisition Cost"
+    ]
+  },
+  {
+    "slug": "travel-monthly-aggregated-2022-2024",
+    "source": "travel_monthly_aggregated_2022_2024.csv",
+    "count": 47,
+    "columns": [
+      "year_month",
+      "total_users",
+      "total_events",
+      "avg_daily_users",
+      "total_revenue",
+      "avg_daily_revenue",
+      "total_sessions"
+    ]
+  },
+  {
+    "slug": "travel-operations-daily-2022-2024",
+    "source": "travel_operations_daily_2022_2024.csv",
+    "count": 1410,
+    "columns": [
+      "date",
+      "Check-in Efficiency",
+      "Baggage Handling",
+      "Fleet Utilization",
+      "Maintenance Schedule",
+      "Fuel Efficiency",
+      "Route Optimization",
+      "Staff Utilization",
+      "Security Screening Time",
+      "Boarding Time",
+      "Turnaround Time"
+    ]
+  },
+  {
+    "slug": "travel-partner-management-daily-2022-2024",
+    "source": "travel_partner_management_daily_2022_2024.csv",
+    "count": 1410,
+    "columns": [
+      "date",
+      "Active Partners",
+      "Partner Bookings",
+      "Partner Quality Score",
+      "Partner Response Time",
+      "Partner Cancellations",
+      "New Partner Onboarding",
+      "Partner Contract Renewals",
+      "Partner Compliance",
+      "Partner Commission",
+      "Partner Disputes"
+    ]
+  },
+  {
+    "slug": "travel-yearly-aggregated-2022-2024",
+    "source": "travel_yearly_aggregated_2022_2024.csv",
+    "count": 4,
+    "columns": [
+      "year",
+      "total_users",
+      "total_events",
+      "avg_daily_users",
+      "total_revenue",
+      "avg_daily_revenue",
+      "total_sessions"
+    ]
+  }
+]
