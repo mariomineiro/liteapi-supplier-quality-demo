@@ -1,0 +1,13 @@
+.env
+*.csv
+__pycache__/
+*.pyc
+output/
+# probe scratch
+_rates_probe.json
+# Dashboard (Next.js) — don't commit deps/build
+dashboard/node_modules/
+dashboard/.next/
+dashboard/.vercel/
+dashboard/out/
+dashboard/*.tsbuildinfo

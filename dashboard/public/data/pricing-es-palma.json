@@ -1,0 +1,84 @@
+{
+  "meta": {
+    "city": "Palma",
+    "country": "ES",
+    "currency": "EUR",
+    "checkin": "2026-06-15",
+    "checkout": "2026-06-17",
+    "adults": 2,
+    "sample_size": 5,
+    "generated_at": "2026-05-21T02:39:22.112249Z"
+  },
+  "rows": [
+    {
+      "hotel_id": "lp80109",
+      "hotel_name": "Torrent Fals",
+      "offers_returned": 13,
+      "distinct_suppliers": 1,
+      "distinct_boards": 1,
+      "min_retail": 438.99,
+      "median_retail": 447.44,
+      "max_retail": 496.67,
+      "price_spread_pct": 12.9,
+      "median_ssp": 487.46,
+      "median_take_rate_pct": 8.9,
+      "competitiveness_score": 67.8
+    },
+    {
+      "hotel_id": "lp65589ee2",
+      "hotel_name": "Hotel Boutique Can Pocovi",
+      "offers_returned": 6,
+      "distinct_suppliers": 1,
+      "distinct_boards": 2,
+      "min_retail": 406.67,
+      "median_retail": 433.87,
+      "max_retail": 514.04,
+      "price_spread_pct": 24.7,
+      "median_ssp": 459.9,
+      "median_take_rate_pct": 6.0,
+      "competitiveness_score": 50.1
+    },
+    {
+      "hotel_id": "lpb136e",
+      "hotel_name": "Agroturismo Sa Vinya d'en Palerm",
+      "offers_returned": 1,
+      "distinct_suppliers": 1,
+      "distinct_boards": 1,
+      "min_retail": 519.12,
+      "median_retail": 519.12,
+      "max_retail": 519.12,
+      "price_spread_pct": 0.0,
+      "median_ssp": 550.26,
+      "median_take_rate_pct": 6.0,
+      "competitiveness_score": 48.8
+    },
+    {
+      "hotel_id": "lp65672f8d",
+      "hotel_name": "Ses Arcades",
+      "offers_returned": 4,
+      "distinct_suppliers": 1,
+      "distinct_boards": 1,
+      "min_retail": 231.75,
+      "median_retail": 264.07,
+      "max_retail": 300.77,
+      "price_spread_pct": 26.1,
+      "median_ssp": 279.9,
+      "median_take_rate_pct": 6.0,
+      "competitiveness_score": 46.0
+    },
+    {
+      "hotel_id": "lp65543b1f",
+      "hotel_name": "Hotel Rural Cas Pla",
+      "offers_returned": 4,
+      "distinct_suppliers": 1,
+      "distinct_boards": 1,
+      "min_retail": 712.5,
+      "median_retail": 778.87,
+      "max_retail": 1522.23,
+      "price_spread_pct": 104.0,
+      "median_ssp": 825.6,
+      "median_take_rate_pct": 6.0,
+      "competitiveness_score": 27.5
+    }
+  ]
+}
