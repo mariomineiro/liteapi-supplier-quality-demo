@@ -283,23 +283,34 @@ a { color: inherit; text-decoration: none; }
   }
 }
 
-/* Horizontally-scrollable table wrapper.
-   The mask creates a soft right-edge fade so users see "there's more →"
-   only when the container is actually overflowed. The mask collapses
-   to none when scrolled to the end (background-attachment: local trick). */
+/* Horizontally-scrollable table wrapper. */
 .table-scroll {
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   border-radius: 10px;
-  background:
-    /* shadow-left covers content fade when scrolled right */
-    linear-gradient(to right, var(--bg-elev) 30%, rgba(25,23,44,0)) left center / 20px 100% no-repeat local,
-    /* shadow-right indicates more content to the right */
-    linear-gradient(to left, var(--bg-elev) 30%, rgba(25,23,44,0)) right center / 20px 100% no-repeat local,
-    /* cue-right: small accent fading shadow that scrolls with content */
-    linear-gradient(to left, rgba(124,91,216,0.45), rgba(124,91,216,0)) right center / 14px 100% no-repeat scroll,
-    var(--bg-elev);
+}
+/* Wrapper that hosts the right-edge "more →" gradient hint on mobile.
+   Sits as a sibling of .table-scroll's overflow, so it doesn't move
+   when the table scrolls. */
+.table-scroll-wrap {
+  position: relative;
+}
+.table-scroll-wrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 28px;
+  pointer-events: none;
+  background: linear-gradient(to left, var(--bg) 0%, rgba(15,6,36,0) 100%);
+  border-radius: 0 10px 10px 0;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+@media (max-width: 767px) {
+  .table-scroll-wrap::after { opacity: 0.9; }
 }
 
 /* Headings — fluid on small screens */

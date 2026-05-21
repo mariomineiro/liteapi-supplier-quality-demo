@@ -88,7 +88,8 @@ export function FilterableTable<T>({ rows, columns, searchKeys = [], rowKey }: P
         </div>
       )}
 
-      <div className="table-scroll" style={{ background: "var(--bg-elev)", border: "1px solid var(--line)" }} role="region" aria-label="Data table">
+      <div className="table-scroll-wrap">
+        <div className="table-scroll" style={{ background: "var(--bg-elev)", border: "1px solid var(--line)" }} role="region" aria-label="Data table">
         <div style={{ minWidth: "max-content" }}>
           <div style={{
             display: "grid", gridTemplateColumns: gridTemplate,
@@ -129,6 +130,7 @@ export function FilterableTable<T>({ rows, columns, searchKeys = [], rowKey }: P
             </div>
           ))}
         </div>
+      </div>
       </div>
     </div>
   );
