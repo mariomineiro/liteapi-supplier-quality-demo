@@ -316,3 +316,21 @@ a { color: inherit; text-decoration: none; }
 /* Headings — fluid on small screens */
 h1 { font-size: clamp(18px, 4vw, 22px); }
 h2 { font-size: clamp(15px, 3vw, 18px); }
+
+/* Page header pattern: pages render an h1 alongside meta as flex siblings
+   with `align-items: baseline`. On narrow screens the meta should flow
+   below the h1 instead of squeezing next to the wrapped title. React
+   serializes the inline style with no space after the colon. */
+@media (max-width: 640px) {
+  .app-content div[style*="align-items:baseline"]:has(> h1) {
+    flex-wrap: wrap !important;
+    row-gap: 4px;
+  }
+  /* Pricing-style h1 contains the meta as an inline <span> child.
+     `display: inline` keeps natural text flow; the trailing meta wraps
+     normally instead of awkwardly anchoring to the h1's last line. */
+  .app-content h1 > span.mono {
+    display: inline-block;
+    margin-left: 0 !important;
+  }
+}
